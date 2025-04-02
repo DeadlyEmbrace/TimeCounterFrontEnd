@@ -1,0 +1,61 @@
+﻿@page "/counter"
+@using TimeCounterFrontend.Models
+@inject IConfiguration Configuration
+@rendermode InteractiveServer
+
+<PageTitle>Time Counter</PageTitle>
+
+<h1>Time Counter</h1>
+
+@if (_model == null && string.IsNullOrEmpty(_errorMessage))
+{
+    <p>Loading...</p>
+}
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <p role="alert">Error: @_errorMessage</p>
+}
+
+@if (_model != null)
+{
+    <p role="status">Server time: @_model.ServerTime</p>
+    <p>Requests number: @_model.RequestCounter</p>
+})
+
+
+@code {
+    /// <summary>
+    /// The model to display
+    /// </summary>
+    private TimeReadmodel? _model;
+
+    /// <summary>
+    /// Error message to show if the model retrieval fails
+    /// </summary>
+    private string? _errorMessage;
+    
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var baseUrl = Configuration["ApiSettings:BaseUrl"];
+                var client = new HttpClient();
+                _model = await client
+                    .GetFromJsonAsync<TimeReadmodel>($"{baseUrl}/time")
+                    .ConfigureAwait(true);
+
+                StateHasChanged();
+            }
+            catch (Exception exception)
+            {
+                _errorMessage = exception.Message;
+            }
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

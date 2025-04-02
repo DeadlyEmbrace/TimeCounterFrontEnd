@@ -1,0 +1,35 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["TimeCounterFrontend.styles.css"]" />
+    <ImportMap />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet />
+    #if !DEBUG
+        <script src="https://cdn.signalfx.com/o11y-gdi-rum/v0.20.1/splunk-otel-web.js" crossorigin="anonymous"></script>
+        <script>
+            SplunkRum.init({
+                realm: "us1",
+                rumAccessToken: "@Configuration["SplunkRum:Token"]",
+                applicationName: "timecounterfrontend",
+                deploymentEnvironment: "@Configuration["SplunkRum:Environment"]"
+            });
+        </script>
+    #endif
+</head>
+
+<body>
+    <Routes />
+    <script src="_framework/blazor.web.js"></script>
+</body>
+
+</html>
