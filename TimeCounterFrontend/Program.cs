@@ -7,11 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Configuration["SplunkRum:Token"] = Environment.GetEnvironmentVariable("SPLUNK_RUM_TOKEN") ?? "";
-builder.Configuration["SplunkRum:Environment"] = Environment.GetEnvironmentVariable("SPLUNK_RUM_ENVIRONMENT") ?? "";
-builder.Configuration["SplunkRum:Enabled"] = Environment.GetEnvironmentVariable("SPLUNK_RUM_ENABLED") ?? "false";
-builder.Configuration["Serilog:Seq:ServerUrl"] = Environment.GetEnvironmentVariable("SEQ_SERVER_URL") ?? "http://localhost:5341";
-
 builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services)
